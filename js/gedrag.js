@@ -3,42 +3,58 @@ jQuery(function($){
 
 
 
-// initial vars
+// helper functions
 //
-var $cell = $('td');
-var $form = $('#do');
-var census = [];
-var nextGen = [];
-var minefield = [];
-
-var twoDArrayGen = function(array, isBolean){
-  for(i=0;i<16;i++){
+var twoDArrayGenerate = function(array, width, height, isBolean){
+  for(i = 0; i < height; i++){
     array[i] = [];
-    for(j=0;j<16;j++){
+    for(j = 0; j < width ; j++){
       array[i][j] = (isBolean ? false : 0);
     };
   };
 }
+var modulus = function(i, j){
+  return (((i%j)+j)%j);
+}
+var f = Math.floor;
 
-twoDArrayGen(census, true);
-twoDArrayGen(nextGen, true);
-twoDArrayGen(minefield, false);
+
+// initial vars
+//
+var $pool = $('#pool');
+var $form = $('#do');
+
+var poolWidth = 16;
+var poolHeight = 16;
+
+var poolEnd = '</tbody>';
+var trStart = '<tr>';
+var trEnd = '</tr>';
+var td = '<td></td>';
+var tdLife = '<td class="life"></td>';
+
+var currentGen = [];
+var nextGen = [];
+var minefield = [];
+twoDArrayGenerate(currentGen, poolWidth, poolHeight, true);
+twoDArrayGenerate(nextGen, poolWidth, poolHeight, true);
+twoDArrayGenerate(minefield, poolWidth, poolHeight, false);
 
 
 // user drawing and recording states
 //
-$cell.on('click', function(i){
+$pool.on('click', 'td', function(i){
   var I = $(this);
   var xPos = i.currentTarget.cellIndex;
   var yPos = i.currentTarget.parentElement.rowIndex;
-  var live = census[yPos][xPos];
+  var life = currentGen[yPos][xPos];
 
-  if(!live){
-    I.addClass('live');
-    census[yPos][xPos] = true;
+  if(!life){
+    I.addClass('life');
+    currentGen[yPos][xPos] = true;
   } else {
-    I.removeClass('live');
-    census[yPos][xPos] = false;
+    I.removeClass('life');
+    currentGen[yPos][xPos] = false;
   }
 })
 
@@ -47,29 +63,28 @@ $cell.on('click', function(i){
 //
 $form.on('submit', function(i){
   i.preventDefault();
-  nextGeneration(census);
+  var nextGen = nextGenCalc(currentGen);
+  render(nextGen);
+  currentGen = nextGen;
 })
 
 
 // calculating next generation
 //
-var nextGeneration = function(array){
+var nextGenCalc = function(array){
 
-  // initial vars, resetting the influence data array
-  //
-  var prevStep = array;
-  twoDArrayGen(minefield, false);
-
+  var prevGen = array;
+  twoDArrayGenerate(minefield, poolWidth, poolHeight, false);
 
   // calculating influence of each cell towards its neighbours
   //
-  for(i in prevStep){
-    for(j in prevStep[i]){
-      if(prevStep[i][j]){
-        for(var n = i-1; n <= Math.floor(i)+1; n++){
-          for(var m = j-1; m <= Math.floor(j)+1; m++){
-            var na = (((n%16)+16)%16)
-            var ma = (((m%16)+16)%16)
+  for(i in prevGen){
+    for(j in prevGen[i]){
+      if(prevGen[i][j]){
+        for(var n = f(i)-1; n <= f(i)+1; n++){
+          for(var m = f(j)-1; m <= f(j)+1; m++){
+            var na = modulus(n, poolHeight);
+            var ma = modulus(m, poolWidth);
             minefield[na][ma] += 1;
           }
         }
@@ -78,7 +93,7 @@ var nextGeneration = function(array){
     }
   }
 
-
+  // http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Rules
   // applying CGF rules, mapping influence to an array that holds the future generation
   //
   for(i in minefield){
@@ -87,7 +102,7 @@ var nextGeneration = function(array){
         nextGen[i][j] = false;
       }
       if(minefield[i][j] === 2){
-        if(prevStep[i][j]){
+        if(prevGen[i][j]){
           nextGen[i][j] = true;
         } else {
           nextGen[i][j] = false;
@@ -102,19 +117,19 @@ var nextGeneration = function(array){
     }
   }
 
+  return nextGen;
+}
 
-  // creating the html of the new generation
-  //
+
+// rendering html of a generation and injecting
+//
+var render = function(gen){
   var newPool = '<tbody>';
-  var trStart = '<tr>';
-  var trEnd = '</tr>';
-  var td = '<td></td>';
-  var tdLife = '<td class="live"></td>';
 
-  for(i in nextGen){
+  for(i in gen){
     newPool += trStart;
-    for(j in nextGen[i]){
-      if(nextGen[i][j]){
+    for(j in gen[i]){
+      if(gen[i][j]){
         newPool += tdLife;
       } else {
         newPool += td;
@@ -122,13 +137,9 @@ var nextGeneration = function(array){
     }
     newPool += trEnd;
   }
+  newPool += poolEnd
 
-
-  // injecting to the DOM and making the new generation the current generation
-  //
   $('#pool').empty().append(newPool);
-  census = nextGen;
-
 }
 
 
