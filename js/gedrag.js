@@ -24,8 +24,12 @@ var f = Math.floor;
 var $pool = $('#pool');
 var $form = $('#do');
 
-var poolWidth = 16;
-var poolHeight = 16;
+var viewportWidth = window.innerWidth;
+var viewportHeight = window.innerHeight;
+var unitSide = 30; // same as (#pool td{width} + #pool td{border-width}) on stijl.css
+var panelHeight = 70; // same as #panel{height} on stijl.css
+var poolCols = f(viewportWidth / unitSide);
+var poolRows = f((viewportHeight - panelHeight) / unitSide);
 
 var poolEnd = '</tbody>';
 var trStart = '<tr>';
@@ -36,9 +40,9 @@ var tdLife = '<td class="life"></td>';
 var currentGen = [];
 var nextGen = [];
 var minefield = [];
-twoDArrayGenerate(currentGen, poolWidth, poolHeight, true);
-twoDArrayGenerate(nextGen, poolWidth, poolHeight, true);
-twoDArrayGenerate(minefield, poolWidth, poolHeight, false);
+twoDArrayGenerate(currentGen, poolCols, poolRows, true);
+twoDArrayGenerate(nextGen, poolCols, poolRows, true);
+twoDArrayGenerate(minefield, poolCols, poolRows, false);
 
 
 // user drawing and recording states
@@ -74,7 +78,7 @@ $form.on('submit', function(i){
 var nextGenCalc = function(array){
 
   var prevGen = array;
-  twoDArrayGenerate(minefield, poolWidth, poolHeight, false);
+  twoDArrayGenerate(minefield, poolCols, poolRows, false);
 
   // calculating influence of each cell towards its neighbours
   //
@@ -83,8 +87,8 @@ var nextGenCalc = function(array){
       if(prevGen[i][j]){
         for(var n = f(i)-1; n <= f(i)+1; n++){
           for(var m = f(j)-1; m <= f(j)+1; m++){
-            var na = modulus(n, poolHeight);
-            var ma = modulus(m, poolWidth);
+            var na = modulus(n, poolRows);
+            var ma = modulus(m, poolCols);
             minefield[na][ma] += 1;
           }
         }
@@ -141,6 +145,11 @@ var render = function(gen){
 
   $('#pool').empty().append(newPool);
 }
+
+
+// first rendering of empty board
+//
+render(currentGen);
 
 
 

@@ -1,8 +1,12 @@
 html {
   font-family: sans-serif;
   background-color: #808080;
+  height: 100%;
 }
 body {
+  margin: 0;
+  position: relative;
+  min-height: 100%;
 }
 #pool {
   border-collapse: collapse;
@@ -12,15 +16,25 @@ body {
 #pool tr {
 }
 #pool td {
-  width: 2em;
-  height: 2em;
+  width: 29px;
+  height: 29px;
   border: 1px solid #ccc;
+  padding: 0;
 }
 .life {
   background-color: #333;
 }
+#panel {
+  position: absolute;
+  height: 70px; /* same as panelHeight on gedrag.js */
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #777;
+  overflow: hidden;
+}
 #next {
   width: 4em;
   height: 2em;
-  font-size: 2em;
+  font-size: 1.8em;
 }
