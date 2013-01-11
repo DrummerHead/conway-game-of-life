@@ -2,9 +2,9 @@
 
 This is my JS version of [Conway's Game of Life](http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
 
-This is an initial version and needs a major refactor (hardcoded stuff, wet, etc); but it works for now. The fruit of one night's work and probabyl many more to come.
+This is an initial version and needs a major refactor (hardcoded stuff, wet, etc); but it works for now. The fruit of one night's work and probably many more to come.
 
-Check it online at http://mcdlr.com/gof/
+Check it online at http://mcdlr.com/game-of-life/
 
 ## Get a great program for Conway's Game of Life
 
