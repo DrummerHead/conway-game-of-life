@@ -13,13 +13,12 @@ body {
   border-spacing: 0;
   background-color: #fefefe;
 }
-#pool tr {
-}
 #pool td {
-  width: 29px;
-  height: 29px;
+  width: 29px; /* same as (unitSide - self.border-width) on gedrag.js*/
+  height: 29px; /* same as self.width */
   border: 1px solid #ccc;
   padding: 0;
+  cursor: pointer;
 }
 .life {
   background-color: #333;
@@ -30,11 +29,18 @@ body {
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: #777;
+  background-color: rgba(120, 120, 120, .5);
   overflow: hidden;
 }
-#next {
-  width: 4em;
+#do {
+  padding: 5px;
+}
+#do button {
+  width: 7em;
   height: 2em;
   font-size: 1.8em;
+  cursor: pointer;
+}
+#do button[disabled] {
+  cursor: not-allowed;
 }

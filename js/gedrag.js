@@ -22,7 +22,8 @@ var f = Math.floor;
 // initial vars
 //
 var $pool = $('#pool');
-var $form = $('#do');
+var $play = $('#play');
+var $next = $('#next');
 
 var viewportWidth = window.innerWidth;
 var viewportHeight = window.innerHeight;
@@ -30,6 +31,7 @@ var unitSide = 30; // same as (#pool td{width} + #pool td{border-width}) on stij
 var panelHeight = 70; // same as #panel{height} on stijl.css
 var poolCols = f(viewportWidth / unitSide);
 var poolRows = f((viewportHeight - panelHeight) / unitSide);
+var flow;
 
 var poolEnd = '</tbody>';
 var trStart = '<tr>';
@@ -43,34 +45,6 @@ var minefield = [];
 twoDArrayGenerate(currentGen, poolCols, poolRows, true);
 twoDArrayGenerate(nextGen, poolCols, poolRows, true);
 twoDArrayGenerate(minefield, poolCols, poolRows, false);
-
-
-// user drawing and recording states
-//
-$pool.on('click', 'td', function(i){
-  var I = $(this);
-  var xPos = i.currentTarget.cellIndex;
-  var yPos = i.currentTarget.parentElement.rowIndex;
-  var life = currentGen[yPos][xPos];
-
-  if(!life){
-    I.addClass('life');
-    currentGen[yPos][xPos] = true;
-  } else {
-    I.removeClass('life');
-    currentGen[yPos][xPos] = false;
-  }
-})
-
-
-// triggering calculation
-//
-$form.on('submit', function(i){
-  i.preventDefault();
-  var nextGen = nextGenCalc(currentGen);
-  render(nextGen);
-  currentGen = nextGen;
-})
 
 
 // calculating next generation
@@ -147,9 +121,59 @@ var render = function(gen){
 }
 
 
+// execution and rendering of a step
+//
+var advanceGen = function(){
+  var nextGen = nextGenCalc(currentGen);
+  render(nextGen);
+  currentGen = nextGen;
+}
+
+
 // first rendering of empty board
 //
 render(currentGen);
+
+
+// user drawing and recording states
+//
+$pool.on('click', 'td', function(i){
+  var I = $(this);
+  var xPos = i.currentTarget.cellIndex;
+  var yPos = i.currentTarget.parentElement.rowIndex;
+  var life = currentGen[yPos][xPos];
+
+  if(!life){
+    I.addClass('life');
+    currentGen[yPos][xPos] = true;
+  } else {
+    I.removeClass('life');
+    currentGen[yPos][xPos] = false;
+  }
+})
+
+
+// triggering calculation
+//
+$next.on('click', function(i){
+  i.preventDefault();
+  advanceGen();
+})
+
+$play.toggle(
+  function(i){
+    i.preventDefault();
+    $play.text('pause');
+    $next.attr('disabled', 'disabled')
+    flow = setInterval(advanceGen, 50)
+  },
+  function(i){
+    i.preventDefault();
+    $play.text('play');
+    $next.removeAttr('disabled')
+    clearInterval(flow)
+  }
+)
 
 
 
