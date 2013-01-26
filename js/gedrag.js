@@ -31,6 +31,7 @@ var unitSide = 30; // same as (#pool td{width} + #pool td{border-width}) on stij
 var panelHeight = 70; // same as #panel{height} on stijl.css
 var poolCols = f(viewportWidth / unitSide);
 var poolRows = f((viewportHeight - panelHeight) / unitSide);
+var isClicking = false;
 var flow;
 
 var poolEnd = '</tbody>';
@@ -137,20 +138,37 @@ render(currentGen);
 
 // user drawing and recording states
 //
-$pool.on('click', 'td', function(i){
-  var I = $(this);
-  var xPos = i.currentTarget.cellIndex;
-  var yPos = i.currentTarget.parentElement.rowIndex;
+var lifeOrDeath = function(elementum, eventum){
+  var xPos = eventum.currentTarget.cellIndex;
+  var yPos = eventum.currentTarget.parentElement.rowIndex;
   var life = currentGen[yPos][xPos];
 
   if(!life){
-    I.addClass('life');
+    elementum.addClass('life');
     currentGen[yPos][xPos] = true;
   } else {
-    I.removeClass('life');
+    elementum.removeClass('life');
     currentGen[yPos][xPos] = false;
   }
-})
+}
+
+$pool.on('mousedown', 'td', function(i){
+  isClicking = true;
+  var I = $(this);
+  lifeOrDeath(I, i);
+});
+
+$pool.on('mouseup', 'td', function(i){
+  isClicking = false;
+});
+
+$pool.on('mouseenter', 'td', function(i){
+  var I = $(this);
+  if(isClicking){
+    lifeOrDeath(I, i);
+  }
+});
+
 
 
 // triggering calculation
