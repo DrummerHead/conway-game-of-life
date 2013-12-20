@@ -5,13 +5,15 @@ jQuery(function($){
 
 // helper functions
 //
-var twoDArrayGenerate = function(array, width, height, isBolean){
+var twoDArrayGenerate = function(width, height, isBolean){
+  var result = [];
   for(i = 0; i < height; i++){
-    array[i] = [];
+    result[i] = [];
     for(j = 0; j < width ; j++){
-      array[i][j] = (isBolean ? false : 0);
+      result[i][j] = (isBolean ? false : 0);
     };
   };
+  return result;
 }
 var modulus = function(i, j){
   return (((i%j)+j)%j);
@@ -40,12 +42,8 @@ var trEnd = '</tr>';
 var td = '<td></td>';
 var tdLife = '<td class="life"></td>';
 
-var currentGen = [];
-var nextGen = [];
-var minefield = [];
-twoDArrayGenerate(currentGen, poolCols, poolRows, true);
-twoDArrayGenerate(nextGen, poolCols, poolRows, true);
-twoDArrayGenerate(minefield, poolCols, poolRows, false);
+var currentGen = twoDArrayGenerate(poolCols, poolRows, true);
+var nextGen = twoDArrayGenerate(nextGen, poolCols, poolRows, true);
 
 
 // calculating next generation
@@ -53,7 +51,7 @@ twoDArrayGenerate(minefield, poolCols, poolRows, false);
 var nextGenCalc = function(array){
 
   var prevGen = array;
-  twoDArrayGenerate(minefield, poolCols, poolRows, false);
+  var minefield = twoDArrayGenerate(poolCols, poolRows, false);
 
   // calculating influence of each cell towards its neighbours
   //
