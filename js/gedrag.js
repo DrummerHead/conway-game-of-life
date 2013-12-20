@@ -1,4 +1,4 @@
-jQuery(function($){
+document.addEventListener("DOMContentLoaded", function(docEvent) {
 
 
 
@@ -23,9 +23,9 @@ var f = Math.floor;
 
 // initial vars
 //
-var $pool = $('#pool');
-var $play = $('#play');
-var $next = $('#next');
+var $pool = document.getElementById('pool');
+var $play = document.getElementById('play');
+var $next = document.getElementById('next');
 
 var viewportWidth = window.innerWidth;
 var viewportHeight = window.innerHeight;
@@ -34,6 +34,7 @@ var panelHeight = 70; // same as #panel{height} on stijl.css
 var poolCols = f(viewportWidth / unitSide);
 var poolRows = f((viewportHeight - panelHeight) / unitSide);
 var isClicking = false;
+var isPlaying = false;
 var flow;
 
 var trStart = '<tr>';
@@ -134,62 +135,66 @@ render(currentGen);
 
 // user drawing and recording states
 //
-var lifeOrDeath = function(elementum, eventum){
-  var xPos = eventum.currentTarget.cellIndex;
-  var yPos = eventum.currentTarget.parentElement.rowIndex;
+var lifeOrDeath = function(el){
+  var xPos = el.cellIndex;
+  var yPos = el.parentElement.rowIndex;
   var life = currentGen[yPos][xPos];
 
   if(!life){
-    elementum.addClass('life');
+    el.setAttribute('class', 'life');
     currentGen[yPos][xPos] = true;
   } else {
-    elementum.removeClass('life');
+    el.removeAttribute('class');
     currentGen[yPos][xPos] = false;
   }
 }
 
-$pool.on('mousedown', 'td', function(i){
-  isClicking = true;
-  var I = $(this);
-  lifeOrDeath(I, i);
-});
-
-$pool.on('mouseup', 'td', function(i){
-  isClicking = false;
-});
-
-$pool.on('mouseenter', 'td', function(i){
-  var I = $(this);
-  if(isClicking){
-    lifeOrDeath(I, i);
+$pool.addEventListener('mousedown', function(e){
+  if(e.target && e.target.nodeName == "TD"){
+    isClicking = true;
+    lifeOrDeath(e.target);
   }
 });
 
+$pool.addEventListener('mouseup', function(e){
+  if(e.target && e.target.nodeName == "TD"){
+    isClicking = false;
+  }
+});
+
+$pool.addEventListener('mouseover', function(e){
+  if(e.target && e.target.nodeName == "TD"){
+    if(isClicking){
+      lifeOrDeath(e.target);
+    }
+  }
+});
 
 
 // triggering calculation
 //
-$next.on('click', function(i){
-  i.preventDefault();
-  advanceGen();
-})
-
-$play.toggle(
-  function(i){
-    i.preventDefault();
-    $play.text('pause');
-    $next.attr('disabled', 'disabled')
-    flow = setInterval(advanceGen, 50)
-  },
-  function(i){
-    i.preventDefault();
-    $play.text('play');
-    $next.removeAttr('disabled')
+$play.addEventListener('click', function(e){
+  e.preventDefault();
+  if(isPlaying){
+    $play.textContent = 'play';
+    $next.removeAttribute('disabled');
     clearInterval(flow)
+    isPlaying = false;
   }
-)
-
-
-
-
+  else{
+    $play.textContent = 'pause';
+    $next.setAttribute('disabled', 'disabled');
+    flow = setInterval(advanceGen, 50);
+    isPlaying = true;
+  }
 });
+
+$next.addEventListener('click', function(e){
+  e.preventDefault();
+  advanceGen();
+});
+
+
+
+
+}, false);
