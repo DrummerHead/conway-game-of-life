@@ -1,4 +1,5 @@
-document.addEventListener("DOMContentLoaded", function(docEvent) {
+document.addEventListener("DOMContentLoaded", function() {
+'use strict';
 
 
 
@@ -11,13 +12,13 @@ var twoDArrayGenerate = function(width, height, isBolean){
     result[i] = [];
     for(var j = 0; j < width ; j++){
       result[i][j] = (isBolean ? false : 0);
-    };
-  };
+    }
+  }
   return result;
-}
+};
 var modulus = function(i, j){
   return (((i%j)+j)%j);
-}
+};
 var f = Math.floor;
 
 
@@ -68,29 +69,29 @@ var nextGenCalc = function(array){
   // http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Rules
   // applying CGF rules, mapping influence to an array that holds the future generation
   //
-  for(var i = 0; i < minefield.length; i++){
-    for(var j = 0; j < minefield[i].length; j++){
-      if(minefield[i][j] <= 1){
-        nextGen[i][j] = false;
+  for(var k = 0; k < minefield.length; k++){
+    for(var l = 0; l < minefield[k].length; l++){
+      if(minefield[k][l] <= 1){
+        nextGen[k][l] = false;
       }
-      if(minefield[i][j] === 2){
-        if(prevGen[i][j]){
-          nextGen[i][j] = true;
+      if(minefield[k][l] === 2){
+        if(prevGen[k][l]){
+          nextGen[k][l] = true;
         } else {
-          nextGen[i][j] = false;
+          nextGen[k][l] = false;
         }
       }
-      if(minefield[i][j] === 3){
-        nextGen[i][j] = true;
+      if(minefield[k][l] === 3){
+        nextGen[k][l] = true;
       }
-      if(minefield[i][j] >= 4){
-        nextGen[i][j] = false;
+      if(minefield[k][l] >= 4){
+        nextGen[k][l] = false;
       }
     }
   }
 
   return nextGen;
-}
+};
 
 
 // rendering html of a generation and injecting
@@ -113,7 +114,7 @@ var render = function(gen){
 
   $pool.removeChild($pool.querySelector('tbody'));
   $pool.innerHTML = newPool;
-}
+};
 
 
 // execution and rendering of a step
@@ -122,7 +123,7 @@ var advanceGen = function(){
   var nextGen = nextGenCalc(currentGen);
   render(nextGen);
   currentGen = nextGen;
-}
+};
 
 
 // first rendering of empty board
@@ -144,7 +145,7 @@ var lifeOrDeath = function(el){
     el.removeAttribute('class');
     currentGen[yPos][xPos] = false;
   }
-}
+};
 
 $pool.addEventListener('mousedown', function(e){
   if(e.target && e.target.nodeName == "TD"){
@@ -175,7 +176,7 @@ $play.addEventListener('click', function(e){
   if(isPlaying){
     $play.textContent = 'play';
     $next.removeAttribute('disabled');
-    clearInterval(flow)
+    clearInterval(flow);
     isPlaying = false;
   }
   else{
