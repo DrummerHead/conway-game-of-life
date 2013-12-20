@@ -7,9 +7,9 @@ jQuery(function($){
 //
 var twoDArrayGenerate = function(width, height, isBolean){
   var result = [];
-  for(i = 0; i < height; i++){
+  for(var i = 0; i < height; i++){
     result[i] = [];
-    for(j = 0; j < width ; j++){
+    for(var j = 0; j < width ; j++){
       result[i][j] = (isBolean ? false : 0);
     };
   };
@@ -36,7 +36,6 @@ var poolRows = f((viewportHeight - panelHeight) / unitSide);
 var isClicking = false;
 var flow;
 
-var poolEnd = '</tbody>';
 var trStart = '<tr>';
 var trEnd = '</tr>';
 var td = '<td></td>';
@@ -55,8 +54,8 @@ var nextGenCalc = function(array){
 
   // calculating influence of each cell towards its neighbours
   //
-  for(i in prevGen){
-    for(j in prevGen[i]){
+  for(var i = 0; i < prevGen.length; i++){
+    for(var j = 0; j < prevGen[i].length; j++){
       if(prevGen[i][j]){
         for(var n = f(i)-1; n <= f(i)+1; n++){
           for(var m = f(j)-1; m <= f(j)+1; m++){
@@ -73,8 +72,8 @@ var nextGenCalc = function(array){
   // http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Rules
   // applying CGF rules, mapping influence to an array that holds the future generation
   //
-  for(i in minefield){
-    for(j in minefield[i]){
+  for(var i = 0; i <  minefield.length; i++){
+    for(var j = 0; j < minefield[i].length; j++){
       if(minefield[i][j] <= 1){
         nextGen[i][j] = false;
       }
@@ -101,11 +100,11 @@ var nextGenCalc = function(array){
 // rendering html of a generation and injecting
 //
 var render = function(gen){
-  var newPool = '<tbody>';
+  var newPool = '';
 
-  for(i in gen){
+  for(var i = 0; i < gen.length; i++){
     newPool += trStart;
-    for(j in gen[i]){
+    for(var j = 0; j < gen[i].length; j++){
       if(gen[i][j]){
         newPool += tdLife;
       } else {
@@ -114,7 +113,6 @@ var render = function(gen){
     }
     newPool += trEnd;
   }
-  newPool += poolEnd
 
   $('#pool').empty().append(newPool);
 }

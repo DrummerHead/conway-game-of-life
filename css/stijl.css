@@ -8,12 +8,12 @@ body {
   position: relative;
   min-height: 100%;
 }
-#pool {
+table {
   border-collapse: collapse;
   border-spacing: 0;
   background-color: #fefefe;
 }
-#pool td {
+table td {
   width: 29px; /* same as (unitSide - self.border-width) on gedrag.js*/
   height: 29px; /* same as self.width */
   border: 1px solid #ccc;
