@@ -43,7 +43,7 @@ var td = '<td></td>';
 var tdLife = '<td class="life"></td>';
 
 var currentGen = twoDArrayGenerate(poolCols, poolRows, true);
-var nextGen = twoDArrayGenerate(nextGen, poolCols, poolRows, true);
+var nextGen = twoDArrayGenerate(poolCols, poolRows, true);
 
 
 // calculating next generation
@@ -73,7 +73,7 @@ var nextGenCalc = function(array){
   // http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Rules
   // applying CGF rules, mapping influence to an array that holds the future generation
   //
-  for(var i = 0; i <  minefield.length; i++){
+  for(var i = 0; i < minefield.length; i++){
     for(var j = 0; j < minefield[i].length; j++){
       if(minefield[i][j] <= 1){
         nextGen[i][j] = false;
