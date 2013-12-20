@@ -29,18 +29,13 @@ var $next = document.getElementById('next');
 
 var viewportWidth = window.innerWidth;
 var viewportHeight = window.innerHeight;
-var unitSide = 30; // same as (#pool td{width} + #pool td{border-width}) on stijl.css
+var unitSide = 30; // same as (table td{width} + table td{border-width}) on stijl.css
 var panelHeight = 70; // same as #panel{height} on stijl.css
 var poolCols = f(viewportWidth / unitSide);
 var poolRows = f((viewportHeight - panelHeight) / unitSide);
 var isClicking = false;
 var isPlaying = false;
 var flow;
-
-var trStart = '<tr>';
-var trEnd = '</tr>';
-var td = '<td></td>';
-var tdLife = '<td class="life"></td>';
 
 var currentGen = twoDArrayGenerate(poolCols, poolRows, true);
 var nextGen = twoDArrayGenerate(poolCols, poolRows, true);
@@ -101,21 +96,23 @@ var nextGenCalc = function(array){
 // rendering html of a generation and injecting
 //
 var render = function(gen){
-  var newPool = '';
+  var newPool = '<tbody>';
 
   for(var i = 0; i < gen.length; i++){
-    newPool += trStart;
+    newPool += '<tr>';
     for(var j = 0; j < gen[i].length; j++){
       if(gen[i][j]){
-        newPool += tdLife;
+        newPool += '<td class="life"></td>';
       } else {
-        newPool += td;
+        newPool += '<td></td>';
       }
     }
-    newPool += trEnd;
+    newPool += '</tr>';
   }
+  newPool += '</tbody>';
 
-  $('#pool').empty().append(newPool);
+  $pool.removeChild($pool.querySelector('tbody'));
+  $pool.innerHTML = newPool;
 }
 
 
