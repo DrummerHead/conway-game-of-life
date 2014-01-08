@@ -2,7 +2,11 @@
 
 This is my JS version of [Conway's Game of Life](http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
 
-This is an initial version and needs a major refactor (hardcoded stuff, wet, etc); but it works for now. The fruit of one night's work and probably many more to come.
+* Vanilla JS
+* Adapts to viewport (bigger monitor, bigger board)
+* Toroidal board (limits connect to itself)
+* Improved experience for touch devices
+* Rule agnostic (other rules could be implemented on the same board)
 
 Check it online at http://mcdlr.com/game-of-life/
 
