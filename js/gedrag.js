@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener('DOMContentLoaded', function() {
 'use strict';
 
 
@@ -36,6 +36,7 @@ var poolCols = f(viewportWidth / unitSide);
 var poolRows = f((viewportHeight - panelHeight) / unitSide);
 var isClicking = false;
 var isPlaying = false;
+var lastMoveTarget;
 var flow;
 
 var currentGen = twoDArrayGenerate(poolCols, poolRows, true);
@@ -151,25 +152,32 @@ var lifeOrDeath = function(el){
   }
 };
 
-$pool.addEventListener('mousedown', function(e){
-  if(e.target && e.target.nodeName == "TD"){
-    isClicking = true;
-    lifeOrDeath(e.target);
+var poolEvent = function(eventsType, actions){
+  for(var i = 0; i < eventsType.length; i++){
+    $pool.addEventListener(eventsType[i], function(e){
+      e.preventDefault();
+      if(e.target && e.target.nodeName == "TD"){
+        actions(e);
+      }
+    }, false);
   }
+}
+
+poolEvent(['mousedown', 'touchstart'], function(e){
+  isClicking = true;
+  lifeOrDeath(lastMoveTarget = e.target);
 });
 
-$pool.addEventListener('mouseup', function(e){
-  if(e.target && e.target.nodeName == "TD"){
-    isClicking = false;
-  }
+poolEvent(['mouseup', 'touchend'], function(e){
+  isClicking = false;
 });
 
-$pool.addEventListener('mouseover', function(e){
-  if(e.target && e.target.nodeName == "TD"){
-    if(isClicking){
-      lifeOrDeath(e.target);
-    }
+poolEvent(['mouseover', 'touchmove'], function(e){
+  var moveTarget = document.elementFromPoint(e.pageX, e.pageY);
+  if(lastMoveTarget != moveTarget && isClicking){
+    lifeOrDeath(moveTarget);
   }
+  lastMoveTarget = moveTarget;
 });
 
 
@@ -189,12 +197,12 @@ $play.addEventListener('click', function(e){
     requestAnimationFrame(advanceGen);
     isPlaying = true;
   }
-});
+}, false);
 
 $next.addEventListener('click', function(e){
   e.preventDefault();
   advanceGenOnce();
-});
+}, false);
 
 
 

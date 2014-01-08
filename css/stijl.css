@@ -1,7 +1,11 @@
 html {
+  height: 100%;
   font-family: sans-serif;
   background-color: #808080;
-  height: 100%;
+  overflow: hidden;
+  -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+          text-size-adjust: 100%;
 }
 body {
   margin: 0;
@@ -23,8 +27,21 @@ table td {
 .life {
   background-color: #333;
 }
+button {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  line-height: normal;
+  font-family: sans-serif;
+  text-transform: none;
+  cursor: pointer;
+  -webkit-appearance: button;
+}
+button[disabled] {
+  cursor: default;
+}
 #panel {
-  position: absolute;
+  position: fixed;
   height: 70px; /* same as panelHeight on gedrag.js */
   right: 0;
   bottom: 0;
@@ -32,8 +49,15 @@ table td {
   background-color: rgba(120, 120, 120, .5);
   overflow: hidden;
 }
+#do,
+#do button {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
 #do {
   float: left;
+  padding: 5px;
 }
 #help {
   float: right;
@@ -47,15 +71,31 @@ table td {
 h1 {
   margin: 0 1em 0 0;
 }
-#do {
-  padding: 5px;
-}
 #do button {
+  float: left;
   width: 7em;
   height: 2em;
   font-size: 1.8em;
-  cursor: pointer;
 }
 #do button[disabled] {
   cursor: not-allowed;
+}
+@media (max-width: 1140px){
+  #do button {
+    font-size: 1.4em;
+  }
+  #help > * {
+    font-size: 1.6em;
+  }
+}
+@media (max-width: 900px){
+  #help {
+    display: none;
+  }
+  #do {
+    width: 100%;
+  }
+  #do button {
+    width: 33.3333333%;
+  }
 }
