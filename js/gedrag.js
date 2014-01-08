@@ -119,11 +119,15 @@ var render = function(gen){
 
 // execution and rendering of a step
 //
-var advanceGen = function(){
+var advanceGenOnce = function(){
   var nextGen = nextGenCalc(currentGen);
   render(nextGen);
   currentGen = nextGen;
 };
+function advanceGen(timeStamp){
+  flow = requestAnimationFrame(advanceGen);
+  advanceGenOnce();
+}
 
 
 // first rendering of empty board
@@ -176,20 +180,20 @@ $play.addEventListener('click', function(e){
   if(isPlaying){
     $play.textContent = 'play';
     $next.removeAttribute('disabled');
-    clearInterval(flow);
+    cancelAnimationFrame(flow);
     isPlaying = false;
   }
   else{
     $play.textContent = 'pause';
     $next.setAttribute('disabled', 'disabled');
-    flow = setInterval(advanceGen, 50);
+    requestAnimationFrame(advanceGen);
     isPlaying = true;
   }
 });
 
 $next.addEventListener('click', function(e){
   e.preventDefault();
-  advanceGen();
+  advanceGenOnce();
 });
 
 
